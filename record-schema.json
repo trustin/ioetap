@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/trustin/ioetap/record-schema.json",
+  "title": "ioetap Record",
+  "description": "A single I/O record in an ioetap recording file (NDJSON format)",
+  "type": "object",
+  "required": ["seq", "timestamp", "source", "content", "encoding"],
+  "properties": {
+    "seq": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Sequence number, starts from 0, atomically incremented for each record"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "description": "UTC timestamp with millisecond precision (ISO 8601 format)",
+      "examples": ["2024-01-15T10:30:45.123Z"]
+    },
+    "source": {
+      "type": "string",
+      "enum": ["stdin", "stdout", "stderr"],
+      "description": "The I/O source of the recorded data"
+    },
+    "content": {
+      "description": "The recorded content. Type depends on the 'encoding' field: string for 'text' and 'base64', any JSON value for 'json'",
+      "examples": ["Hello, World!", {"key": "value"}, [1, 2, 3], 42, true, null]
+    },
+    "encoding": {
+      "type": "string",
+      "enum": ["text", "json", "base64"],
+      "description": "Content encoding type. 'json': content is a native JSON value; 'text': content is a UTF-8 string; 'base64': content is base64-encoded binary data"
+    },
+    "end": {
+      "type": "string",
+      "pattern": "^(\\r?\\n|\\r)+$",
+      "description": "Line ending characters (\\n or \\r\\n). Omitted if the line has no trailing newline (e.g., final incomplete line at EOF)",
+      "examples": ["\n", "\r\n"]
+    },
+    "truncated": {
+      "type": "boolean",
+      "const": true,
+      "description": "Present and true only when the line was truncated due to --max-line-length limit. Omitted when not truncated"
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "seq": 0,
+      "timestamp": "2024-01-15T10:30:45.123Z",
+      "source": "stdout",
+      "content": "Hello, World!",
+      "encoding": "text",
+      "end": "\n"
+    },
+    {
+      "seq": 1,
+      "timestamp": "2024-01-15T10:30:45.456Z",
+      "source": "stdout",
+      "content": {"key": "value", "count": 42},
+      "encoding": "json",
+      "end": "\n"
+    },
+    {
+      "seq": 2,
+      "timestamp": "2024-01-15T10:30:45.789Z",
+      "source": "stdout",
+      "content": "//4AAQ==",
+      "encoding": "base64"
+    },
+    {
+      "seq": 3,
+      "timestamp": "2024-01-15T10:30:46.000Z",
+      "source": "stdout",
+      "content": "This is a very long line that was trun",
+      "encoding": "text",
+      "end": "\n",
+      "truncated": true
+    }
+  ]
+}

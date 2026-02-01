@@ -1,0 +1,16 @@
+# Build artifacts
+bin/
+/ioetap
+
+# Recording files
+*.jsonl
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
