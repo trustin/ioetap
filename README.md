@@ -13,14 +13,14 @@ go install github.com/trustin/ioetap/cmd/ioetap@latest
 ### Download binaries
 
 Pre-built binaries are available for:
-- macOS ARM64 (Apple Silicon)
-- Linux AMD64
+- macOS AMD64 and ARM64 (Apple Silicon)
+- Linux AMD64 and ARM64
 
 ## Usage
 
 ```bash
+ioetap <command> [args...]
 ioetap [options] -- <command> [args...]
-ioetap <command> [args...]  # backward compatible (no options)
 ```
 
 ### Options
@@ -159,7 +159,7 @@ make test
 # Build and test
 make all
 
-# Cross-compile for macOS ARM64 and Linux AMD64
+# Cross-compile for macOS AMD64/ARM64 and Linux ARM64/AMD64
 make cross-compile
 
 # Build release binaries with a specific version
