@@ -78,3 +78,24 @@ jobs:
             bin/ioetap-${{ inputs.version }}-linux-amd64
             bin/ioetap-${{ inputs.version }}-linux-arm64
             bin/checksums.sha256
+
+      - name: Bump version for next development cycle
+        if: ${{ !inputs.prerelease }}
+        run: |
+          # Parse current version and bump patch
+          VERSION="${{ inputs.version }}"
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
+          MINOR=$(echo "$VERSION" | cut -d. -f2)
+          PATCH=$(echo "$VERSION" | cut -d. -f3 | cut -d- -f1)
+          NEXT_PATCH=$((PATCH + 1))
+          NEXT_VERSION="${MAJOR}.${MINOR}.${NEXT_PATCH}-dev"
+
+          echo "Bumping version to $NEXT_VERSION"
+
+          # Update version.go
+          sed -i "s/var Version = \".*\"/var Version = \"${NEXT_VERSION}\"/" internal/version/version.go
+
+          # Commit and push
+          git add internal/version/version.go
+          git commit -m "chore: Bump version to ${NEXT_VERSION} for next development cycle"
+          git push origin main
