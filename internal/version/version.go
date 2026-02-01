@@ -10,7 +10,7 @@ import (
 // at build time using ldflags for release builds:
 //
 //	go build -ldflags "-X github.com/trustin/ioetap/internal/version.Version=1.0.0"
-var Version = "1.0.0-dev"
+var Version = "1.0.1-dev"
 
 // GitCommit is the git commit hash of the build.
 // This is set at build time using ldflags:
